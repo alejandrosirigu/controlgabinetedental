@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control del Gabinete Dental</title>
+<meta name="theme-color" content="#173f3f">
+<style>
+:root{
+  --bg:#f6f3f0; --paper:#fffdfb; --paper2:#faf7f5; --ink:#294040;
+  --muted:#748383; --teal:#315f5d; --teal2:#5f8983; --mint:#dcece8;
+  --gold:#c8a064; --gold2:#eee0c5; --rose:#e3aaa5; --red:#c97973;
+  --lav:#e8e1ef; --blue:#dce9ef; --line:#e7dfda;
+  --cute-bg:#f8f3ed; --cute-paper:#fffdf7; --cute-paper2:#fff8f2; --cute-ink:#4d4a42;
+  --cute-green:#78a878; --cute-green-dark:#5f8f67; --cute-mint:#dcefdc; --cute-pink:#f6c9ca;
+  --cute-yellow:#f6df9e; --cute-blue:#cfe6ee;
+  --shadow:0 18px 50px rgba(41,64,64,.10); --radius:24px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:
+radial-gradient(circle at 10% 10%,rgba(201,155,82,.12),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(47,119,112,.10),transparent 30%),var(--bg);transition:background .25s ease,color .25s ease}
+body.theme-cute{--bg:var(--cute-bg);--paper:var(--cute-paper);--paper2:var(--cute-paper2);--ink:var(--cute-ink);--muted:#7f8079;--teal:var(--cute-green-dark);--teal2:var(--cute-green);--mint:var(--cute-mint);--gold:var(--cute-yellow);--gold2:#f9ebbc;--rose:var(--cute-pink);--red:#de8f95;--lav:#e9def6;--blue:var(--cute-blue);--line:#eadfd4;background:
+radial-gradient(circle at 8% 8%,rgba(246,201,202,.42),transparent 25%),
+radial-gradient(circle at 90% 8%,rgba(207,230,238,.55),transparent 24%),
+radial-gradient(circle at 50% 100%,rgba(220,239,220,.58),transparent 30%),var(--bg)}
+body.theme-cute .btn-primary{background:linear-gradient(135deg,#83b889,#9bc99e);color:#fff;box-shadow:0 9px 20px rgba(95,143,103,.18)}
+body.theme-cute .btn-soft{background:#e6f2de;color:#54765b}
+body.theme-cute .btn-gold{background:#fff0bd;color:#775d26}
+body.theme-cute .btn-ghost{background:#fffaf7;color:#6f6e67;border-color:#eadfd4}
+body.theme-cute .btn-danger{background:#fbe2e1;color:#a35a62}
+body.theme-cute .session-banner{background:linear-gradient(135deg,#dcefdc 0%,#eaf4df 34%,#e8f3f8 68%,#f9e5eb 100%);color:#4e5a50;box-shadow:0 18px 45px rgba(112,135,110,.16);position:relative;overflow:hidden;border:1px solid rgba(120,150,120,.20)}
+body.theme-cute .session-banner:before{content:"🌸  ✦  🌼  ✦  🍃";position:absolute;right:18px;top:14px;font-size:21px;letter-spacing:4px;opacity:.50;pointer-events:none}
+body.theme-cute .session-banner:after{content:"";position:absolute;right:-50px;bottom:-85px;width:230px;height:230px;border-radius:50%;background:rgba(255,240,189,.45);pointer-events:none}
+body.theme-cute .session-banner h1{color:#4f7557}
+body.theme-cute .session-banner p{color:#637066}
+body.theme-cute .session-banner > div:first-child > div:first-child{color:#6f7f73 !important}
+body.theme-cute .date-nav .btn-ghost{color:#5c765f !important;border-color:rgba(92,118,95,.28) !important;background:rgba(255,255,255,.58)}
+body.theme-cute .date-nav .btn-ghost:hover{background:rgba(255,255,255,.82);border-color:rgba(92,118,95,.42) !important}
+body.theme-cute .date-nav .datebox{background:rgba(255,255,255,.62);border-color:rgba(92,118,95,.18);box-shadow:0 6px 18px rgba(87,108,88,.05)}
+body.theme-cute .datebox input{color:#536556 !important;color-scheme:light}
+body.theme-cute .date-nav .btn:not(.btn-ghost){background:#fffaf0 !important;color:#6d5c37 !important;border:1px solid rgba(180,151,78,.25)}
+body.theme-cute .card-head h3,body.theme-cute .side-card h3,body.theme-cute .modal-head h2,body.theme-cute .brand h2,body.theme-cute .splash h1{color:#5f8f67}
+body.theme-cute .card,body.theme-cute .quick,body.theme-cute .modal{box-shadow:0 12px 30px rgba(94,90,75,.07)}
+body.theme-cute .quick{position:relative;overflow:hidden}
+body.theme-cute .quick:nth-child(1){background:linear-gradient(145deg,#fffdf8,#edf6e8)}
+body.theme-cute .quick:nth-child(2){background:linear-gradient(145deg,#fffdf8,#eef4fb)}
+body.theme-cute .quick:nth-child(3){background:linear-gradient(145deg,#fffdf8,#f9eaf0)}
+body.theme-cute .quick:nth-child(4){background:linear-gradient(145deg,#fffdf8,#fff3d3)}
+body.theme-cute .quick:nth-child(1) .ico{color:#72a873}
+body.theme-cute .quick:nth-child(2) .ico{color:#79a6c9}
+body.theme-cute .quick:nth-child(3) .ico{color:#d8909d}
+body.theme-cute .quick:nth-child(4) .ico{color:#c99f45}
+body.theme-cute .quick:hover{border-color:#d7e1d2;box-shadow:0 12px 30px rgba(94,90,75,.08)}
+body.theme-cute .chair{background:linear-gradient(145deg,#fffefa,#f8f0e4);border-color:#eadfd4}
+body.theme-cute .chair:nth-child(4n+1){background:linear-gradient(145deg,#fffefa,#eff6e9)}
+body.theme-cute .chair:nth-child(4n+2){background:linear-gradient(145deg,#fffefa,#eef5fb)}
+body.theme-cute .chair:nth-child(4n+3){background:linear-gradient(145deg,#fffefa,#faedf2)}
+body.theme-cute .chair:nth-child(4n){background:linear-gradient(145deg,#fffefa,#fff4d9)}
+body.theme-cute .chair.active{border-color:#79a97f;box-shadow:0 0 0 4px rgba(120,168,120,.12)}
+body.theme-cute .chair:hover{border-color:#cadfc7}
+body.theme-cute .pill{background:#e8f2df;color:#56735a}
+body.theme-cute .timeline-item.current{border-color:#b7d5b5;background:#eff8eb}
+body.theme-cute .stat:nth-child(1){background:#eef7ea}
+body.theme-cute .stat:nth-child(2){background:#edf5fb}
+body.theme-cute .stat:nth-child(3){background:#faedf2}
+body.theme-cute .stat:nth-child(4){background:#fff5dc}
+body.theme-cute .rating-box{background:linear-gradient(145deg,#fff9ef,#f7f0dc);border-color:#ead9af}
+body.theme-cute .check-row:nth-child(4n+1){background:#f4f9ee}
+body.theme-cute .check-row:nth-child(4n+2){background:#f2f7fb}
+body.theme-cute .check-row:nth-child(4n+3){background:#fcf0f4}
+body.theme-cute .check-row:nth-child(4n){background:#fff7e5}
+body.theme-cute .logo,body.theme-cute .brand-mark{background:linear-gradient(145deg,#75a676,#9cc39b);box-shadow:0 12px 24px rgba(98,139,103,.18)}
+body.theme-cute .splash-card:before{background:#f8e8b7} body.theme-cute .splash-card:after{background:#dcefdc}
+body.theme-cute .modal-head{background:rgba(255,253,247,.95)}
+body.theme-cute .tab{background:#fff7f2;color:#77766e;border:1px solid #eadfd4}
+body.theme-cute .tab:nth-child(2n){background:#f2f7fb}
+body.theme-cute .tab.active{background:linear-gradient(135deg,#79a97f,#94bf98);color:#fff;border-color:transparent}
+body.theme-cute input,body.theme-cute select,body.theme-cute textarea{background:#fffefa;border-color:#eadfd4}
+body.theme-cute input:focus,body.theme-cute select:focus,body.theme-cute textarea:focus{border-color:#9ec3a0;box-shadow:0 0 0 3px rgba(126,171,128,.10)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.splash{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px}
+.splash-card{max-width:920px;width:100%;background:rgba(255,253,248,.88);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow);border-radius:36px;padding:70px 50px;text-align:center;position:relative;overflow:hidden}
+.splash-card:before,.splash-card:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.45}
+.splash-card:before{width:220px;height:220px;background:var(--gold2);right:-80px;top:-90px}
+.splash-card:after{width:180px;height:180px;background:var(--mint);left:-70px;bottom:-70px}
+.logo{width:92px;height:92px;margin:0 auto 25px;border-radius:30px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:43px;box-shadow:0 15px 30px rgba(31,90,88,.25);position:relative;z-index:1}
+.splash h1{font-family:Georgia,serif;font-size:clamp(42px,7vw,76px);line-height:.98;margin:0 auto 18px;max-width:760px;color:var(--teal);position:relative;z-index:1}
+.splash p{font-size:18px;color:var(--muted);max-width:650px;margin:0 auto 34px;line-height:1.6;position:relative;z-index:1}
+.byline{font-size:14px;color:var(--muted);margin-top:24px;position:relative;z-index:1}
+.btn{border:0;border-radius:15px;padding:12px 17px;font-weight:700;transition:.18s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 9px 20px rgba(31,90,88,.18)}
+.btn-soft{background:var(--mint);color:var(--teal)}
+.btn-gold{background:#f1e1bd;color:#694c22}
+.btn-danger{background:#f7dfdd;color:#914944}
+.btn-ghost{background:transparent;color:var(--teal);border:1px solid var(--line)}
+.btn-small{padding:8px 11px;border-radius:11px;font-size:13px}
+.app-shell{max-width:1500px;margin:auto;padding:20px}
+.topbar{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-mark{width:46px;height:46px;border-radius:15px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:22px}
+.brand h2{margin:0;font:700 22px Georgia,serif;color:var(--teal)}
+.brand small{color:var(--muted)}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.session-banner{background:var(--teal);color:white;border-radius:28px;padding:25px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:var(--shadow);margin-bottom:18px}
+.session-banner h1{margin:2px 0 5px;font:700 clamp(25px,4vw,38px) Georgia,serif}
+.session-banner p{margin:0;color:#d9ebe7}
+.date-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.date-nav .datebox{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);padding:10px 13px;border-radius:14px}
+.datebox input{border:0;background:transparent;color:#fff;font-weight:700;outline:0}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+.quick{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:0 8px 25px rgba(35,52,52,.05);text-align:left}
+.quick:hover{border-color:#c7d7d3}
+.quick .ico{font-size:24px;margin-bottom:10px}
+.quick b{display:block}.quick span{font-size:12px;color:var(--muted);display:block;margin-top:4px}
+.main-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:0 8px 25px rgba(35,52,52,.05)}
+.card-head{padding:20px 22px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.card-head h3{margin:0;font:700 22px Georgia,serif;color:var(--teal)}
+.card-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.card-body{padding:20px}
+.chair-grid{display:grid;gap:14px;padding:20px}
+.chair{background:linear-gradient(145deg,#fffdf9,#f2eee5);border:2px solid var(--line);border-radius:23px;min-height:165px;padding:17px;transition:.2s;position:relative;overflow:hidden}
+.chair:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(35,52,52,.10);border-color:#c4d4d0}
+.chair.active{border-color:var(--teal);box-shadow:0 0 0 4px rgba(31,90,88,.09)}
+.chair-number{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.chair-icon{font-size:38px;margin:9px 0 7px}
+.chair h4{margin:0;font-size:18px}.chair .students{margin:9px 0;color:var(--muted);font-size:13px;line-height:1.45}
+.chair-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--mint);color:var(--teal);padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.side-card{padding:20px}
+.side-card h3{font:700 20px Georgia,serif;color:var(--teal);margin:0 0 15px}
+.timeline{display:flex;flex-direction:column;gap:9px}
+.timeline-item{padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:var(--paper2)}
+.timeline-item.current{border-color:#a9c8c1;background:#edf6f2}
+.timeline-item b{font-size:13px}.timeline-item small{display:block;color:var(--muted);margin-top:3px}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--teal)}
+.modal-back{position:fixed;inset:0;background:rgba(20,35,35,.42);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal{width:min(1050px,100%);max-height:92vh;overflow:auto;background:var(--paper);border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.modal-head{position:sticky;top:0;background:rgba(255,253,248,.95);backdrop-filter:blur(15px);z-index:2;padding:20px 23px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{margin:0;font:700 25px Georgia,serif;color:var(--teal)}
+.modal-body{padding:23px}
+.close{width:38px;height:38px;border:0;background:var(--paper2);border-radius:12px;font-size:20px;color:var(--teal)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.tab{border:0;background:var(--paper2);color:var(--muted);padding:9px 13px;border-radius:12px;font-weight:700}
+.tab.active{background:var(--teal);color:#fff}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}
+.field label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input,select,textarea{border:1px solid var(--line);background:#fffefa;color:var(--ink);border-radius:12px;padding:11px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#8db5ae;box-shadow:0 0 0 3px rgba(47,119,112,.08)}
+.actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:15px}
+.list{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+.list-row{border:1px solid var(--line);background:var(--paper2);border-radius:15px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.list-main{min-width:0}.list-main b{display:block}.list-main small{color:var(--muted)}
+.student-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.student-box{border:1px dashed #cfc5b5;border-radius:17px;padding:13px;background:#fcfaf4;min-height:100px}
+.student-box h4{margin:0 0 10px;color:var(--teal)}
+.student-chip{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:8px 9px;border-radius:11px;margin-bottom:7px}
+.student-chip span{font-size:13px}.student-chip select{padding:5px 7px;font-size:12px}
+.drag-zone{min-height:80px}
+.check-row{display:flex;align-items:center;gap:9px;padding:10px;border-bottom:1px solid var(--line)}
+.check-row:last-child{border-bottom:0}
+.check-row input{width:18px;height:18px}
+.stars{display:flex;gap:3px}.star{border:0;background:transparent;font-size:26px;padding:0;color:#c8c0b2}.star.on{color:var(--gold)}
+.rating-box{background:#faf5e8;border:1px solid #ead8b5;border-radius:17px;padding:14px}
+.stats-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}
+.stat{padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--paper2)}.stat strong{font-size:26px;color:var(--teal);display:block}.stat small{color:var(--muted)}
+.student-table{width:100%;border-collapse:collapse}.student-table th,.student-table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.student-table th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.empty{text-align:center;padding:40px 15px;color:var(--muted)}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--teal);color:white;padding:13px 16px;border-radius:14px;box-shadow:var(--shadow);z-index:100;animation:up .2s ease}
+@keyframes up{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.chair.dragging{opacity:.45;transform:scale(.98)}
+.chair.drag-over{border-color:var(--teal);box-shadow:0 0 0 4px rgba(31,90,88,.12),0 14px 30px rgba(35,52,52,.10)}
+.instrumental-banner{margin:0 20px 2px;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,var(--paper),var(--paper2));display:flex;align-items:center;justify-content:space-between;gap:14px}
+.instrumental-toggle{display:flex;align-items:center;gap:11px;font-weight:800}
+.instrumental-toggle input{width:20px;height:20px;accent-color:var(--teal)}
+.instrumental-tasks{margin-top:12px;border:1px solid #ead9af;border-radius:18px;overflow:hidden;background:var(--paper2)}
+.instrumental-title{padding:11px 13px;font-weight:900;color:#806427;background:#fff6dd}
+body.theme-cute .instrumental-title{background:#fff0cf;color:#896927}
+.chair-map-hint{font-size:12px;color:var(--muted);margin-top:5px}
+
+footer{text-align:center;padding:18px;color:var(--muted);font-size:12px}
+@media(max-width:1050px){.main-layout{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.app-shell{padding:11px}.topbar{align-items:flex-start}.top-actions{max-width:60%}.session-banner{padding:20px;flex-direction:column;align-items:flex-start}.quick-grid{grid-template-columns:1fr 1fr}.form-grid,.form-grid.three,.student-layout,.stats-cards{grid-template-columns:1fr}.splash-card{padding:50px 24px}.splash h1{font-size:46px}.chair-grid{padding:12px}.modal-body{padding:16px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const KEY="gabineteDentalData_v1";
+const state={
+  config:{chairs:6,rows:2,cols:3,theme:"navy",chairLabels:[1,2,3,4,5,6],chairOrder:[0,1,2,3,4,5]},
+  sessionMeta:{},
+  modules:[
+    {id:"m1",name:"1º - Exploración de la cavidad oral",day:5,start:"10:00",end:"12:10"},
+    {id:"m2",name:"2º - Conservadora, periodoncia, cirugía y prótesis",day:4,start:"11:15",end:"14:00"}
+  ],
+  exceptions:[],
+  students:[],
+  groups:{},
+  tasks:[
+    {id:"t1",section:"Antes de empezar",name:"Encendido de compresor y diferenciales",frequency:"Cada sesión",scope:"specific",chairs:[6]},
+    {id:"t2",section:"Antes de empezar",name:"Sacar el pedal de debajo del sillón",frequency:"Diaria",scope:"all",chairs:[]},
+    {id:"t3",section:"Antes de empezar",name:"Encendido del sillón y comprobar que funciona",frequency:"Diaria",scope:"all",chairs:[]},
+
+    {id:"t4",section:"Durante la sesión",name:"Trabajar en un tono adecuado",frequency:"Diaria",scope:"all",chairs:[]},
+    {id:"t5",section:"Durante la sesión",name:"Tener un comportamiento adecuado de clínica",frequency:"Diaria",scope:"all",chairs:[]},
+    {id:"t6",section:"Durante la sesión",name:"Estar atentos a la práctica propuesta por el profesor/a",frequency:"Diaria",scope:"all",chairs:[]},
+
+    {id:"t7",section:"Después de la sesión · Material",name:"Limpieza previa del instrumental usado en el fregadero",frequency:"Cuando corresponda",scope:"all",chairs:[],instrumental:true},
+    {id:"t8",section:"Después de la sesión · Material",name:"Desinfección del material usado (US o manual)",frequency:"Cuando corresponda",scope:"all",chairs:[],instrumental:true},
+    {id:"t9",section:"Después de la sesión · Material",name:"Aclarado en fregadero y secado del material",frequency:"Cuando corresponda",scope:"all",chairs:[],instrumental:true},
+    {id:"t10",section:"Después de la sesión · Material",name:"Termosellado y empaquetado del material",frequency:"Cuando corresponda",scope:"all",chairs:[],instrumental:true},
+    {id:"t11",section:"Después de la sesión · Material",name:"Esterilización en Autoclave",frequency:"Cuando corresponda",scope:"all",chairs:[],instrumental:true},
+
+    {id:"t12",section:"Después de la sesión · General",name:"Limpieza del sillón dental y equipo dental",frequency:"Diaria",scope:"all",chairs:[]},
+    {id:"t13",section:"Después de la sesión · General",name:"Recogida y limpieza del mobiliario auxiliar",frequency:"Diaria",scope:"all",chairs:[]},
+    {id:"t14",section:"Después de la sesión · General",name:"Barrer y fregar en caso de haber suciedad en el suelo",frequency:"Diaria",scope:"all",chairs:[]},
+
+    {id:"t15",section:"Mantenimiento periódico",name:"Limpiezas de mangueras con agua y líquido desinfectante",frequency:"Semanal",scope:"all",chairs:[],moduleScope:"specific",moduleIds:["m1"]},
+    {id:"t16",section:"Mantenimiento periódico",name:"Limpieza de filtros de escupidera y mangueras",frequency:"Semanal",scope:"all",chairs:[],moduleScope:"specific",moduleIds:["m1"]},
+    {id:"t17",section:"Mantenimiento periódico",name:"Desinfección de mangueras mediante aspiración de 2L agua + 2 tapones desinfectante",frequency:"Semanal",scope:"all",chairs:[],moduleScope:"specific",moduleIds:["m1"]},
+    {id:"t18",section:"Mantenimiento periódico",name:"⚙️ Lubricación de material rotatorio",frequency:"Semanal",scope:"all",chairs:[],moduleScope:"specific",moduleIds:["m2"],instrumental:true},
+    {id:"t19",section:"Mantenimiento periódico",name:"🫧 Colocación de pastillas antiespumógenas",frequency:"Mensual",scope:"all",chairs:[],moduleScope:"specific",moduleIds:["m1"]}
+  ],
+  evaluations:{},
+  distributionRules:{}
+};
+let currentDate = isoDate(new Date());
+let currentChair=null;
+let modalType=null;
+let toastTimer;
+
+function uid(p="id"){return p+Math.random().toString(36).slice(2,9)}
+function isoDate(d){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function parseDate(s){return new Date(s+"T12:00:00")}
+function dayName(d){return ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][d.getDay()]}
+function fmtDate(s){return parseDate(s).toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function save(){localStorage.setItem(KEY,JSON.stringify(state)); showToast("Datos guardados en este dispositivo")}
+function load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(KEY));
+    if(x)Object.assign(state,x);
+  }catch(e){}
+  if(!state.config)state.config={};
+  if(!state.config.theme)state.config.theme="navy";
+  if(!Array.isArray(state.config.chairLabels))state.config.chairLabels=Array.from({length:state.config.chairs||6},(_,i)=>i+1);
+  if(!Array.isArray(state.config.chairOrder))state.config.chairOrder=Array.from({length:state.config.chairs||6},(_,i)=>i);
+  normalizeChairConfig();
+  if(!state.sessionMeta||typeof state.sessionMeta!=="object")state.sessionMeta={};
+  if(!Array.isArray(state.tasks)) state.tasks=[];
+  state.tasks.forEach(t=>{
+    if(!t.section)t.section="Tareas del gabinete";
+    if(!Array.isArray(t.chairs))t.chairs=[];
+    if(!t.scope)t.scope="all";
+    if(!t.moduleScope)t.moduleScope="all";
+    if(!Array.isArray(t.moduleIds))t.moduleIds=[];
+    if(typeof t.instrumental!=="boolean")t.instrumental=["t7","t8","t9","t10","t11","t18"].includes(t.id);
+  });
+  document.body.classList.toggle("theme-cute",state.config.theme==="cute");
+  const defaults={t15:"m1",t16:"m1",t17:"m1",t18:"m2",t19:"m1"};
+  state.tasks.forEach(t=>{if(defaults[t.id] && (!t.moduleIds||!t.moduleIds.length)){t.moduleScope="specific";t.moduleIds=[defaults[t.id]];}});
+  state.tasks.forEach(t=>{if(t.scope==="specific"&&!Array.isArray(t.chairIndexes))t.chairIndexes=(t.chairs||[]).map(n=>Number(n)-1).filter(i=>i>=0);});
+}
+function showToast(msg){clearTimeout(toastTimer);let el=document.getElementById("toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.className="toast";el.textContent=msg;toastTimer=setTimeout(()=>el.remove(),2300)}
+function studentsForModule(mid){return state.students.filter(s=>s.moduleId===mid)}
+function activeModule(date=currentDate){
+  const d=parseDate(date), dow=d.getDay();
+  const ex=state.exceptions.find(x=>x.date===date);
+  if(ex)return {name:ex.name,exception:true,id:ex.moduleId||null};
+  const ms=state.modules.filter(m=>Number(m.day)===dow);
+  return ms[0]||null;
+}
+function moduleSchedule(date=currentDate){
+  const d=parseDate(date), dow=d.getDay();
+  const ex=state.exceptions.find(x=>x.date===date);
+  if(ex)return [{...ex,exception:true}];
+  return state.modules.filter(m=>Number(m.day)===dow).sort((a,b)=>a.start.localeCompare(b.start));
+}
+function ensureGroups(mid){
+  if(!mid)return;
+  const arr=studentsForModule(mid);
+  if(!state.groups[mid])state.groups[mid]=[];
+  const existing=new Set(state.groups[mid].flat());
+  arr.forEach(s=>{if(!existing.has(s.id))state.groups[mid].push([s.id])});
+  // Normalize to chairs
+  distributeModule(mid,false);
+}
+function distributeModule(mid,random=true){
+  const arr=studentsForModule(mid);
+  if(!arr.length){state.groups[mid]=Array.from({length:state.config.chairs},()=>[]);return}
+  let list=[...arr];
+  const mode=state._distribution?.[mid]||"balanced";
+  if(random || mode==="random")list.sort(()=>Math.random()-.5);
+  const groups=Array.from({length:state.config.chairs},()=>[]);
+  list.forEach((s,i)=>groups[i%state.config.chairs].push(s.id));
+  state.groups[mid]=groups;
+  saveSilent();
+}
+function saveSilent(){localStorage.setItem(KEY,JSON.stringify(state))}
+function normalizeChairConfig(){
+  const count=Math.max(1,Number(state.config?.chairs)||6);
+  let labels=Array.isArray(state.config.chairLabels)?state.config.chairLabels.slice(0,count):[];
+  while(labels.length<count)labels.push(labels.length?Math.max(...labels.map(Number).filter(Number.isFinite),0)+1:labels.length+1);
+  labels=labels.slice(0,count).map((n,i)=>{const v=Number(n);return Number.isFinite(v)&&v>0?Math.trunc(v):i+1});
+  let order=Array.isArray(state.config.chairOrder)?state.config.chairOrder.filter(i=>Number.isInteger(i)&&i>=0&&i<count):[];
+  const seen=new Set(order);
+  for(let i=0;i<count;i++)if(!seen.has(i))order.push(i);
+  state.config.chairLabels=labels;state.config.chairOrder=order.slice(0,count);
+}
+function chairLabel(i){normalizeChairConfig();return state.config.chairLabels[i]||i+1}
+function chairOrder(){normalizeChairConfig();return state.config.chairOrder}
+function evalKey(date,chair){return date+"|"+chair}
+function sessionKey(date,mid){return date+"|"+(mid||"none")}
+function sessionInstrumentalUsed(date=currentDate,mid=activeModule(date)?.id){const key=sessionKey(date,mid);return !!state.sessionMeta[key]?.instrumentalUsed}
+function setInstrumentalUsed(value){const mid=activeModule()?.id||"none";const key=sessionKey(currentDate,mid);if(!state.sessionMeta[key])state.sessionMeta[key]={};state.sessionMeta[key].instrumentalUsed=!!value;saveSilent();refreshModal("chair",currentChair)}
+function groupForStudent(mid,sid){return (state.groups[mid]||[]).findIndex(g=>g.includes(sid))}
+function getEval(date,chair){
+  const k=evalKey(date,chair);
+  if(!state.evaluations[k])state.evaluations[k]={tasks:{},behavior:0,effectiveness:0,notes:""};
+  return state.evaluations[k];
+}
+function taskAppliesToModule(task,mid){
+  if(task.moduleScope!=="specific")return true;
+  return !!mid && (task.moduleIds||[]).includes(mid);
+}
+function taskModuleLabel(task){
+  if(task.moduleScope!=="specific")return "Todos los módulos";
+  const names=(task.moduleIds||[]).map(id=>state.modules.find(m=>m.id===id)?.name).filter(Boolean);
+  return names.length?names.join(" · "):"Sin módulos seleccionados";
+}
+function taskAppliesToChair(task,index){
+  if(task.scope!=="specific")return true;
+  if(Array.isArray(task.chairIndexes))return task.chairIndexes.includes(index);
+  return (task.chairs||[]).includes(index)|| (task.chairs||[]).includes(index+1);
+}
+function taskChairLabel(task){
+  if(task.scope!=="specific")return "Todos los sillones";
+  const indexes=Array.isArray(task.chairIndexes)?task.chairIndexes:(task.chairs||[]).map(n=>Number(n)-1);
+  return "Sillones: "+indexes.filter(i=>i>=0&&i<state.config.chairs).map(chairLabel).join(", ");
+}
+function instrumentalTasksForModule(mid){return state.tasks.filter(t=>t.instrumental&&taskAppliesToModule(t,mid));}
+function distributionToken(date,mode){
+  const d=parseDate(date);
+  if(mode==="session")return isoDate(d);
+  if(mode==="month")return `${d.getFullYear()}-${d.getMonth()+1}`;
+  return `${d.getFullYear()}-Q${Math.floor(d.getMonth()/3)+1}`;
+}
+function applyPeriodicDistribution(mid){
+  const rule=state.distributionRules?.[mid];
+  if(!rule)return;
+  const token=distributionToken(currentDate,rule.mode);
+  if(rule.lastToken!==token){
+    rule.lastToken=token;
+    distributeModule(mid,true);
+    saveSilent();
+  }
+}
+function render(){
+  const root=document.getElementById("app");
+  root.innerHTML=`<div class="splash" id="splash">
+    <div class="splash-card">
+      <div class="logo">🦷</div>
+      <h1>Control del<br>Gabinete Dental</h1>
+      <p>Una herramienta visual para organizar sillones, grupos, tareas y evaluación del taller bucodental.</p>
+      <button class="btn btn-primary" onclick="enterApp()">Entrar al gabinete →</button>
+      <div class="byline">Creado por <b>Alejandro Sirigu</b> · @alejandrosirigu</div>
+    </div>
+  </div>`;
+}
+function enterApp(){renderApp()}
+function renderApp(){
+  const mod=activeModule(), sched=moduleSchedule(), students=mod?.id?studentsForModule(mod.id):[];
+  if(mod?.id){
+    ensureGroups(mod.id);
+    applyPeriodicDistribution(mod.id);
+  }
+  const title=mod?.name||"Sin módulo programado";
+  document.getElementById("app").innerHTML=`<div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">🦷</div><div><h2>Control del Gabinete Dental</h2><small>Panel docente · ${esc(title)}</small></div></div>
+      <div class="top-actions">
+        <label class="btn btn-ghost btn-small" title="Cambia entre la estética sobria y la estética cuqui">🎨 <select id="themeSelect" style="border:0;background:transparent;padding:0;color:inherit;font-weight:700;outline:0" onchange="setTheme(this.value)"><option value="navy" ${state.config.theme==="navy"?"selected":""}>Navy clínica</option><option value="cute" ${state.config.theme==="cute"?"selected":""}>🌸 Cozy</option></select></label>
+        <button class="btn btn-soft btn-small" onclick="openModal('calendar')">📅 Calendario</button>
+        <button class="btn btn-ghost btn-small" onclick="openModal('stats')">📊 Estadísticas</button>
+        <button class="btn btn-ghost btn-small" onclick="openModal('backup')">💾 Guardar / cargar</button>
+      </div>
+    </header>
+    <section class="session-banner">
+      <div><div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#b9d7d1">Sesión de hoy · ${fmtDate(currentDate)}</div><h1>${esc(title)}</h1><p>${mod?.exception?"Sesión excepcional":sched.length? sched.map(x=>`${x.start}–${x.end}`).join(" · "):"No hay módulo programado para este día"}</p></div>
+      <div class="date-nav"><button class="btn btn-ghost btn-small" style="color:#fff;border-color:#ffffff40" onclick="moveDate(-1)">←</button><div class="datebox"><input type="date" value="${currentDate}" onchange="setDate(this.value)"></div><button class="btn btn-ghost btn-small" style="color:#fff;border-color:#ffffff40" onclick="moveDate(1)">→</button><button class="btn btn-small" style="background:#fff;color:var(--teal)" onclick="setDate(isoDate(new Date()))">Hoy</button></div>
+    </section>
+    <section class="quick-grid">
+      <button class="quick" onclick="openModal('chairs')"><div class="ico">🪑</div><b>Configurar sillones</b><span>${state.config.chairs} sillones · ${state.config.rows} × ${state.config.cols}</span></button>
+      <button class="quick" onclick="openModal('modules')"><div class="ico">🗓️</div><b>Configurar módulos</b><span>${state.modules.length} módulos programados</span></button>
+      <button class="quick" onclick="openModal('groups')"><div class="ico">👥</div><b>Configurar grupos</b><span>${students.length} alumnos en esta sesión</span></button>
+      <button class="quick" onclick="openModal('tasks')"><div class="ico">☑️</div><b>Tareas del gabinete</b><span>${state.tasks.length} tareas configuradas</span></button>
+    </section>
+    <div class="main-layout">
+      <section class="card">
+        <div class="card-head"><div><h3>Mapa del gabinete</h3><p>Pulsa un sillón para trabajar con su grupo.</p><div class="chair-map-hint">↕ Puedes arrastrar los sillones para adaptar el mapa a la distribución real del gabinete.</div></div><span class="pill">● Sesión activa</span></div>
+        <div class="chair-grid" style="grid-template-columns:repeat(${Math.max(1,state.config.cols)},minmax(0,1fr))">${chairHTML(mod?.id)}</div>
+      </section>
+      <aside class="card side-card">
+        <h3>Agenda del día</h3>
+        ${sched.length?sched.map(x=>`<div class="timeline"><div class="timeline-item current"><b>${esc(x.name)}</b><small>${x.start} – ${x.end}${x.exception?" · Excepcional":""}</small></div></div>`).join(""):`<div class="empty" style="padding:20px 0">No hay ninguna sesión programada.</div>`}
+        <div style="margin-top:24px"><h3>Resumen</h3>
+          <div class="stat"><strong>${students.length}</strong><small>alumnos del módulo</small></div>
+          <div class="stat" style="margin-top:8px"><strong>${state.config.chairs}</strong><small>sillones configurados</small></div>
+        </div>
+        <div class="legend"><span class="pill">🟢 Grupo activo</span><span class="pill" style="background:#f4ead8;color:#785a2d">⭐ Evaluación</span></div>
+      </aside>
+    </div>
+    <footer>Control del Gabinete Dental · Creado por Alejandro Sirigu · Datos almacenados localmente en este dispositivo</footer>
+  </div>`;
+}
+function chairHTML(mid){
+  return chairOrder().map(i=>{
+    const ids=mid?(state.groups[mid]?.[i]||[]):[];
+    const names=ids.map(id=>state.students.find(s=>s.id===id)?.name).filter(Boolean);
+    const label=chairLabel(i);
+    return `<button class="chair" draggable="true" data-chair-index="${i}" ondragstart="dragChair(event,${i})" ondragover="allowChairDrop(event)" ondragleave="leaveChairDrop(event)" ondrop="dropChair(event,${i})" ondragend="endChairDrag()" onclick="openChair(${i},'${mid||""}')">
+      <div class="chair-number">Sillón ${label}</div><div class="chair-icon">🦷</div><h4>Sillón ${label}</h4>
+      <div class="students">${names.length?names.map(esc).join(" · "):"Sin alumnos asignados"}</div>
+      <div class="chair-footer"><span class="pill">${names.length} alumno${names.length===1?"":"s"}</span><span>↕ Arrastrar</span></div>
+    </button>`
+  }).join("");
+}
+let dragChairIndex=null;
+function dragChair(e,i){dragChairIndex=i;e.currentTarget.classList.add("dragging");if(e.dataTransfer){e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",String(i));}}
+function allowChairDrop(e){e.preventDefault();if(e.currentTarget.dataset.chairIndex!==String(dragChairIndex))e.currentTarget.classList.add("drag-over");}
+function leaveChairDrop(e){e.currentTarget.classList.remove("drag-over")}
+function dropChair(e,targetIndex){e.preventDefault();e.currentTarget.classList.remove("drag-over");const source=dragChairIndex;dragChairIndex=null;if(source===null||source===targetIndex)return;const order=chairOrder().slice();const from=order.indexOf(source);const to=order.indexOf(targetIndex);if(from<0||to<0)return;order.splice(from,1);order.splice(to,0,source);state.config.chairOrder=order;saveSilent();renderApp();showToast("Orden de sillones actualizado")}
+function endChairDrag(){dragChairIndex=null;document.querySelectorAll(".chair").forEach(el=>el.classList.remove("dragging","drag-over"))}
+
+function moveDate(n){const d=parseDate(currentDate);d.setDate(d.getDate()+n);setDate(isoDate(d))}
+function setDate(s){currentDate=s;renderApp()}
+function openModal(type,extra=null){modalType=type;const back=document.createElement("div");back.className="modal-back";back.id="modal";back.innerHTML=modalHTML(type,extra);document.body.appendChild(back)}
+function closeModal(){document.getElementById("modal")?.remove();currentChair=null}
+function modalShell(title,body){return `<div class="modal" onclick="event.stopPropagation()"><div class="modal-head"><h2>${title}</h2><button class="close" onclick="closeModal()">×</button></div><div class="modal-body">${body}</div></div>`}
+function modalHTML(type,extra){
+  if(type==="chairs")return modalShell("🪑 Configurar sillones",`
+    <div class="form-grid three">
+      <div class="field"><label>Número de sillones</label><input id="chairCount" type="number" min="1" max="40" value="${state.config.chairs}"></div>
+      <div class="field"><label>Filas</label><input id="chairRows" type="number" min="1" max="10" value="${state.config.rows}"></div>
+      <div class="field"><label>Columnas</label><input id="chairCols" type="number" min="1" max="10" value="${state.config.cols}"></div>
+    </div>
+    <div class="rating-box" style="margin-top:14px"><b>🔢 Numeración real de los sillones</b><p style="margin:5px 0 12px;color:var(--muted);font-size:13px">Puedes cambiar manualmente el número visible de cada sillón. La identidad interna se conserva, por lo que sus alumnos, evaluaciones y tareas siguen vinculados al sillón correcto.</p>
+      <div class="form-grid three">${Array.from({length:state.config.chairs},(_,i)=>`<div class="field"><label>Sillón ${i+1} · número visible</label><input class="chairLabelInput" data-index="${i}" type="number" min="1" max="999" value="${chairLabel(i)}"></div>`).join("")}</div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-top:15px">La cuadrícula se adapta automáticamente. Puedes <b>arrastrar los sillones directamente en el mapa</b> para cambiar su posición; las filas y columnas solo controlan la forma de la cuadrícula.</p>
+    <div class="actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveChairs()">Guardar configuración</button></div>`);
+  if(type==="modules")return modalShell("🗓️ Configurar módulos",`
+    <div class="form-grid">
+      <div class="field"><label>Nombre del módulo</label><input id="modName" placeholder="Ej. Taller Bucodental"></div>
+      <div class="field"><label>Día</label><select id="modDay">${["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"].map((d,i)=>`<option value="${i}">${d}</option>`).join("")}</select></div>
+      <div class="field"><label>Hora de inicio</label><input id="modStart" type="time" value="09:00"></div>
+      <div class="field"><label>Hora de fin</label><input id="modEnd" type="time" value="11:00"></div>
+    </div><div class="actions"><button class="btn btn-primary" onclick="addModule()">Añadir módulo</button></div>
+    <div class="list">${state.modules.map(m=>`<div class="list-row"><div class="list-main"><b>${esc(m.name)}</b><small>${["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][m.day]} · ${m.start}–${m.end}</small></div><button class="btn btn-danger btn-small" onclick="deleteModule('${m.id}')">Eliminar</button></div>`).join("")||`<div class="empty">Todavía no hay módulos.</div>`}</div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+    <h3 style="color:var(--teal)">Sesiones excepcionales</h3><p style="font-size:13px;color:var(--muted)">Permite indicar qué módulo se imparte un día concreto aunque no coincida con el horario habitual.</p>
+    <div class="form-grid"><div class="field"><label>Fecha</label><input id="exDate" type="date" value="${currentDate}"></div><div class="field"><label>Módulo excepcional</label><select id="exModule">${state.modules.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("")}</select></div></div>
+    <div class="actions"><button class="btn btn-soft" onclick="addException()">Añadir excepción</button></div>
+    <div class="list">${state.exceptions.map(x=>`<div class="list-row"><div class="list-main"><b>${fmtDate(x.date)}</b><small>${esc(x.name)} · sesión excepcional</small></div><button class="btn btn-danger btn-small" onclick="deleteException('${x.id}')">Eliminar</button></div>`).join("")}</div>`);
+  if(type==="groups")return groupsModal();
+  if(type==="tasks")return tasksModal();
+  if(type==="calendar")return calendarModal();
+  if(type==="backup")return backupModal();
+  if(type==="stats")return statsModal();
+  if(type==="taskEdit")return taskEditModal(extra);
+  if(type==="chair")return chairModal(extra);
+}
+function groupsModal(){
+  const mids=state.modules;
+  const selected=window._groupModule||activeModule()?.id||mids[0]?.id||"";
+  window._groupModule=selected;
+  const st=studentsForModule(selected);
+  const groups=state.groups[selected]||[];
+  return modalShell("👥 Configurar grupos",`
+    <div class="tabs">${mids.map(m=>`<button class="tab ${m.id===selected?"active":""}" onclick="window._groupModule='${m.id}';refreshModal('groups')">${esc(m.name)}</button>`).join("")}</div>
+    <div class="rating-box" style="margin-bottom:13px"><b>👥 Alumnado del módulo seleccionado</b><p style="margin:5px 0 0;color:var(--muted);font-size:13px">Esta lista es independiente de la de los demás módulos. Puedes cargar, añadir y distribuir alumnos solo dentro de <b>${esc(mids.find(m=>m.id===selected)?.name||"este módulo")}</b>.</p></div>
+    <div class="form-grid">
+      <div class="field"><label>Añadir alumno</label><input id="newStudent" placeholder="Nombre y apellidos"></div>
+      <div class="field"><label>Distribución automática</label><select id="distMode"><option value="balanced">Equitativa</option><option value="random">Aleatoria</option><option value="session">Aleatoria por sesión</option><option value="month">Aleatoria mensual</option><option value="quarter">Aleatoria trimestral</option></select></div>
+    </div>
+    <div class="actions"><button class="btn btn-soft" onclick="addStudent('${selected}')">+ Añadir alumno a este módulo</button><label class="btn btn-ghost">📄 Importar Excel/CSV a este módulo<input type="file" accept=".xlsx,.xls,.csv" hidden onchange="importStudents(event,'${selected}')"></label><button class="btn btn-primary" onclick="autoDistribute('${selected}')">Distribuir este módulo</button></div>
+    <p style="font-size:12px;color:var(--muted)">La importación se realiza exclusivamente en el módulo seleccionado. Para Excel/CSV: <b>columna 1 = Nombre, columna 2 = Apellidos, columna 3 = Observaciones</b>. Si hay encabezados, también puede detectarlos automáticamente.</p>
+    <div class="student-layout">${Array.from({length:state.config.chairs},(_,i)=>`<div class="student-box"><h4>🦷 Sillón ${i+1} <span style="float:right;font-size:12px;color:var(--muted)">${(groups[i]||[]).length}</span></h4><div class="drag-zone">${(groups[i]||[]).map(sid=>{const s=state.students.find(x=>x.id===sid);return s?`<div class="student-chip" draggable="true" ondragstart="dragStudent(event,'${selected}','${sid}')" ondragover="event.preventDefault()" ondrop="dropStudent(event,'${selected}',${i})"><span>👤 ${esc(s.name)}</span><button class="close" style="width:27px;height:27px;font-size:15px" onclick="removeStudent('${sid}','${selected}')">×</button></div>`:""}).join("")}</div></div>`).join("")}</div>
+    <div class="actions"><button class="btn btn-primary" onclick="save();closeModal();renderApp()">✓ Guardar grupos</button></div>`);
+}
+function modulePickerHTML(prefix="newTask",selectedScope="all",selectedIds=[]){
+  return `<div class="field full"><label>Aplicación por módulo</label>
+    <select id="${prefix}ModuleScope" onchange="toggleTaskModulePicker('${prefix}')">
+      <option value="all" ${selectedScope!=="specific"?"selected":""}>🌎 Todos los módulos</option>
+      <option value="specific" ${selectedScope==="specific"?"selected":""}>🎯 Solo módulos seleccionados</option>
+    </select>
+    <div id="${prefix}ModulePicker" class="${selectedScope==="specific"?"":"hidden"}" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
+      ${state.modules.map(m=>`<label class="pill" style="cursor:pointer;padding:8px 11px;background:var(--paper2);border:1px solid var(--line)"><input type="checkbox" class="modulePick-${prefix}" value="${m.id}" ${selectedIds.includes(m.id)?"checked":""} style="width:15px;height:15px"> ${esc(m.name)}</label>`).join("")}
+    </div>
+  </div>`;
+}
+function tasksModal(){
+  const sections=[...new Set(state.tasks.map(t=>t.section||"Tareas del gabinete"))];
+  const freqOptions=["Cada sesión","Diaria","Semanal","Cada 2 semanas","Cada 3 semanas","Mensual","Trimestral","Cuando corresponda"];
+  return modalShell("☑️ Tareas del gabinete",`
+    <p style="font-size:13px;color:var(--muted);margin-top:0">
+      Las tareas pueden aplicarse a todos los módulos o únicamente a módulos concretos. Además, puedes limitar cada tarea a determinados sillones.
+    </p>
+    <div class="form-grid">
+      <div class="field"><label>Nombre de la tarea</label><input id="taskName" placeholder="Ej. Revisar instrumental"></div>
+      <div class="field"><label>Sección</label><select id="taskSection"><option>Antes de empezar</option><option>Durante la sesión</option><option>Después de la sesión · Material</option><option>Después de la sesión · General</option><option>Mantenimiento periódico</option><option>Otra</option></select></div>
+      <div class="field"><label>Periodicidad</label><select id="taskFreq">${freqOptions.map(x=>`<option>${x}</option>`).join("")}</select></div>
+      <div class="field"><label>Tarea vinculada al instrumental</label><label class="pill" style="align-self:flex-start;cursor:pointer;padding:10px 12px;background:var(--paper2);border:1px solid var(--line)"><input id="taskInstrumental" type="checkbox" style="width:17px;height:17px"> 🧰 Mostrar cuando se use instrumental</label></div>
+      <div class="field"><label>Ámbito por sillón</label><select id="taskScope" onchange="toggleChairPicker()"><option value="all">Todos los sillones</option><option value="specific">Uno o varios sillones concretos</option></select></div>
+      <div class="field full hidden" id="chairPickerField"><label>Sillones asignados</label><div style="display:flex;gap:7px;flex-wrap:wrap">${Array.from({length:state.config.chairs},(_,i)=>`<label class="pill" style="cursor:pointer;padding:8px 11px;background:var(--paper2);border:1px solid var(--line)"><input type="checkbox" class="chairPick" value="${i}" style="width:15px;height:15px"> Sillón ${chairLabel(i)}</label>`).join("")}</div></div>
+      ${modulePickerHTML("newTask")}
+    </div>
+    <div class="actions"><button class="btn btn-primary" onclick="addTask()">+ Añadir tarea</button></div>
+    <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+    ${sections.map(section=>`<div style="margin:18px 0 9px"><h3 style="color:var(--teal);margin:0;font:700 19px Georgia,serif">${esc(section)}</h3></div><div class="list">${state.tasks.filter(t=>(t.section||"Tareas del gabinete")===section).map(t=>`<div class="list-row"><div class="list-main"><b>☑ ${esc(t.name)}</b><small>${esc(t.frequency)} · ${taskModuleLabel(t)} · ${taskChairLabel(t)}${t.instrumental?" · 🧰 Instrumental":""}</small></div><div style="display:flex;gap:6px"><button class="btn btn-soft btn-small" onclick="editTask('${t.id}')">Editar</button><button class="btn btn-danger btn-small" onclick="deleteTask('${t.id}')">Eliminar</button></div></div>`).join("")}</div>`).join("")}
+  `);
+}
+function taskEditModal(id){
+  const t=state.tasks.find(x=>x.id===id);if(!t)return modalShell("Editar tarea","<div class='empty'>Tarea no encontrada.</div>");
+  const freqOptions=["Cada sesión","Diaria","Semanal","Cada 2 semanas","Cada 3 semanas","Mensual","Trimestral","Cuando corresponda"];
+  return modalShell("✏️ Editar tarea",`
+    <div class="form-grid">
+      <div class="field full"><label>Nombre de la tarea</label><input id="editTaskName" value="${esc(t.name)}"></div>
+      <div class="field"><label>Sección</label><input id="editTaskSection" value="${esc(t.section||"Tareas del gabinete")}"></div>
+      <div class="field"><label>Periodicidad</label><select id="editTaskFreq">${freqOptions.map(x=>`<option ${x===t.frequency?"selected":""}>${x}</option>`).join("")}</select></div>
+      <div class="field"><label>Tarea vinculada al instrumental</label><label class="pill" style="align-self:flex-start;cursor:pointer;padding:10px 12px;background:var(--paper2);border:1px solid var(--line)"><input id="editTaskInstrumental" type="checkbox" ${t.instrumental?"checked":""} style="width:17px;height:17px"> 🧰 Mostrar cuando se use instrumental</label></div>
+      <div class="field full"><label>Ámbito por sillón</label><select id="editTaskScope" onchange="toggleChairPickerEdit()"><option value="all" ${t.scope!=="specific"?"selected":""}>Todos los sillones</option><option value="specific" ${t.scope==="specific"?"selected":""}>Uno o varios sillones concretos</option></select></div>
+      <div class="field full ${t.scope==="specific"?"":"hidden"}" id="editChairPickerField"><label>Sillones asignados</label><div style="display:flex;gap:7px;flex-wrap:wrap">${Array.from({length:state.config.chairs},(_,i)=>`<label class="pill" style="cursor:pointer;padding:8px 11px;background:var(--paper2);border:1px solid var(--line)"><input type="checkbox" class="editChairPick" value="${i}" ${((t.chairIndexes||((t.chairs||[]).map(n=>Number(n)-1))).includes(i))?"checked":""} style="width:15px;height:15px"> Sillón ${chairLabel(i)}</label>`).join("")}</div></div>
+      ${modulePickerHTML("editTask",t.moduleScope,t.moduleIds||[])}
+    </div>
+    <div class="actions"><button class="btn btn-ghost" onclick="refreshModal('tasks')">Cancelar</button><button class="btn btn-primary" onclick="saveTaskEdit('${id}')">✓ Guardar cambios</button></div>
+  `);
+}
+function calendarModal(){
+  const d=parseDate(currentDate);
+  const days=[]; for(let i=-3;i<=3;i++){let x=new Date(d);x.setDate(d.getDate()+i);let s=isoDate(x);days.push(`<button class="list-row" style="width:100%;text-align:left;border:${s===currentDate?"2px solid var(--teal)":"1px solid var(--line)"}" onclick="setDate('${s}');closeModal()"><div class="list-main"><b>${fmtDate(s)}</b><small>${moduleSchedule(s).map(m=>m.name).join(" · ")||"Sin módulo"}</small></div><span>→</span></button>`)}
+  return modalShell("📅 Calendario de sesiones",`<div class="actions" style="justify-content:space-between"><button class="btn btn-ghost" onclick="moveDate(-7);closeModal()">← Semana anterior</button><button class="btn btn-soft" onclick="setDate(isoDate(new Date()));closeModal()">Hoy</button><button class="btn btn-ghost" onclick="moveDate(7);closeModal()">Semana siguiente →</button></div><div class="list">${days.join("")}</div>`);
+}
+function backupModal(){
+ return modalShell("💾 Guardar y cargar datos",`
+   <div class="rating-box"><b>Tu información se guarda automáticamente</b><p style="font-size:13px;color:var(--muted)">La app usa almacenamiento local del navegador. Aun así, es recomendable descargar una copia de seguridad periódicamente, especialmente antes de cambiar de ordenador o navegador.</p></div>
+   <div class="actions" style="justify-content:flex-start"><button class="btn btn-primary" onclick="exportData()">⬇ Descargar copia .JSON</button><label class="btn btn-soft">⬆ Cargar copia .JSON<input type="file" accept=".json" hidden onchange="importData(event)"></label></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:24px 0">
+   <h3 style="color:var(--teal)">Restablecer</h3><p style="font-size:13px;color:var(--muted)">Elimina toda la información y devuelve la aplicación a una configuración inicial.</p><button class="btn btn-danger" onclick="resetAll()">Restablecer aplicación</button>`);
+}
+function academicCourseBounds(date){
+  const d=parseDate(date), year=d.getMonth()>=8?d.getFullYear():d.getFullYear()-1;
+  return {start:new Date(year,8,1),end:new Date(year+1,7,31,23,59,59),label:`${year}/${String(year+1).slice(-2)}`};
+}
+function trimesterBounds(date,n){
+  const course=academicCourseBounds(date);
+  if(n===1)return {start:new Date(course.start),end:new Date(course.start.getFullYear(),11,31,23,59,59)};
+  if(n===2)return {start:new Date(course.start.getFullYear()+1,0,1),end:new Date(course.start.getFullYear()+1,2,31,23,59,59)};
+  return {start:new Date(course.start.getFullYear()+1,3,1),end:new Date(course.start.getFullYear()+1,5,30,23,59,59)};
+}
+function statsPeriodLabel(period){return ({day:"Día",month:"Mes",trimester1:"1r trimestre",trimester2:"2º trimestre",trimester3:"3r trimestre",course:"Curso completo"}[period]||"Mes");}
+function getStatsRange(period){
+  const today=parseDate(currentDate);
+  if(period==="day")return {start:new Date(today),end:new Date(today.getFullYear(),today.getMonth(),today.getDate(),23,59,59)};
+  if(period==="month")return {start:new Date(today.getFullYear(),today.getMonth(),1),end:new Date(today.getFullYear(),today.getMonth()+1,0,23,59,59)};
+  if(period==="course")return academicCourseBounds(currentDate);
+  if(period==="trimester1"||period==="trimester2"||period==="trimester3")return trimesterBounds(currentDate,+period.slice(-1));
+  return {start:new Date(today.getFullYear(),today.getMonth(),1),end:today};
+}
+function statsModal(){
+ const all=state.students,period=window._statsPeriod||"month",range=getStatsRange(period);
+ const rows=all.map(s=>{
+   let scores=[],taskTotal=0,taskDone=0;
+   Object.entries(state.evaluations).forEach(([k,e])=>{
+     const date=k.split("|")[0],dd=parseDate(date);if(dd<range.start||dd>range.end||!e)return;
+     const mid=activeModule(date)?.id;if(mid!==s.moduleId)return;
+     const g=groupForStudent(s.moduleId,s.id);if(g<0)return;
+     scores.push(((e.behavior||0)+(e.effectiveness||0))/2);
+     state.tasks.filter(t=>taskAppliesToModule(t,mid)&&(taskAppliesToChair(t,g))).forEach(t=>{taskTotal++;if(e.tasks?.[t.id])taskDone++;});
+   });
+   return {s,score:scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:0,compliance:taskTotal?taskDone/taskTotal*100:0};
+ });
+ const rated=rows.filter(r=>r.score>0),avgScore=rated.length?rated.reduce((a,r)=>a+r.score,0)/rated.length:0,avgCompliance=rows.length?rows.reduce((a,r)=>a+r.compliance,0)/rows.length:0,course=academicCourseBounds(currentDate);
+ return modalShell("📊 Estadísticas individuales",`
+   <div class="rating-box" style="margin-bottom:14px"><b>Periodo: ${statsPeriodLabel(period)}</b><p style="margin:5px 0 0;color:var(--muted);font-size:13px">${period==="course"?`Curso académico ${course.label}`:period.startsWith("trimester")?`Curso académico ${course.label}`:`${fmtDate(currentDate)}`}</p></div>
+   <div class="tabs">${[["day","Día"],["month","Mes"],["trimester1","1r trimestre"],["trimester2","2º trimestre"],["trimester3","3r trimestre"],["course","Curso completo"]].map(([p,label])=>`<button class="tab ${p===period?"active":""}" onclick="window._statsPeriod='${p}';refreshModal('stats')">${label}</button>`).join("")}</div>
+   <div class="stats-cards"><div class="stat"><strong>${all.length}</strong><small>alumnos</small></div><div class="stat"><strong>${rated.length}</strong><small>con valoración</small></div><div class="stat"><strong>${Math.round(avgCompliance)}%</strong><small>cumplimiento medio</small></div><div class="stat"><strong>${avgScore?avgScore.toFixed(1):"0.0"}</strong><small>valoración media /5</small></div></div>
+   <div style="overflow:auto"><table class="student-table"><thead><tr><th>Alumno</th><th>Módulo</th><th>Valoración grupal</th><th>Tareas</th></tr></thead><tbody>${rows.length?rows.sort((a,b)=>b.score-a.score).map(r=>`<tr><td><b>${esc(r.s.name)}</b></td><td>${esc(state.modules.find(m=>m.id===r.s.moduleId)?.name||"—")}</td><td>${r.score?stars(r.score):"—"}</td><td>${Math.round(r.compliance)}%</td></tr>`).join(""):`<tr><td colspan="4" class="empty">No hay alumnos en el periodo seleccionado.</td></tr>`}</tbody></table></div>`);
+}
+function stars(n){return "★".repeat(Math.round(n))+"☆".repeat(5-Math.round(n))}
+function chairModal(i){
+ const mid=activeModule()?.id, ids=mid?(state.groups[mid]?.[i]||[]):[], e=getEval(currentDate,i);
+ const used=sessionInstrumentalUsed(currentDate,mid);
+ const tasks=state.tasks.filter(t=>taskAppliesToModule(t,mid) && taskAppliesToChair(t,i));
+ const regularTasks=tasks.filter(t=>!t.instrumental);
+ const instrumentalTasks=tasks.filter(t=>t.instrumental);
+ const renderTaskSection=(list)=>[...new Set(list.map(t=>t.section||"Tareas del gabinete"))].map(section=>`
+     <div style="margin:14px 0 7px;font-weight:800;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em">${esc(section)}</div>
+     <div class="card" style="box-shadow:none">${list.filter(t=>(t.section||"Tareas del gabinete")===section).map(t=>`<label class="check-row"><input type="checkbox" ${e.tasks[t.id]?"checked":""} onchange="setTaskEval(${i},'${t.id}',this.checked)"><span>${esc(t.name)}</span><small style="margin-left:auto;color:var(--muted)">${esc(t.frequency)}</small></label>`).join("")}</div>
+   `).join("");
+ return modalShell(`🦷 Sillón ${chairLabel(i)}`,`
+   <div class="rating-box"><b>Grupo asignado</b><div style="margin-top:8px">${ids.length?ids.map(id=>{const st=state.students.find(s=>s.id===id);return st?`<span class="pill" style="margin:3px">👤 ${esc(st.name)}</span>`:""}).join(""):"No hay alumnos asignados."}</div></div>
+   <div class="instrumental-banner" style="margin:16px 0 10px">
+     <label class="instrumental-toggle"><input type="checkbox" ${used?"checked":""} onchange="setInstrumentalUsed(this.checked)"><span>🧰 ¿Se ha utilizado instrumental esta sesión?</span></label>
+     <span class="pill">${used?"Instrumental usado":"Sin instrumental"}</span>
+   </div>
+   <h3 style="color:var(--teal);margin:18px 0 10px">Checklist de tareas</h3>
+   ${renderTaskSection(regularTasks)}
+   ${used&&instrumentalTasks.length?`<div class="instrumental-tasks"><div class="instrumental-title">🧰 Tareas activadas por uso de instrumental</div><div style="padding:0 10px 10px">${renderTaskSection(instrumentalTasks)}</div></div>`:""}
+   ${used&&instrumentalTasks.length===0?`<div class="empty" style="padding:18px 8px">No hay tareas de instrumental configuradas para este módulo.</div>`:""}
+   <h3 style="color:var(--teal);margin:22px 0 10px">Valoración grupal</h3>
+   <div class="form-grid"><div class="rating-box"><b>Comportamiento</b><div class="stars" id="behStars">${[1,2,3,4,5].map(n=>`<button class="star ${e.behavior>=n?"on":""}" onclick="setRating(${i},'behavior',${n})">★</button>`).join("")}</div></div>
+   <div class="rating-box"><b>Efectividad del trabajo</b><div class="stars" id="effStars">${[1,2,3,4,5].map(n=>`<button class="star ${e.effectiveness>=n?"on":""}" onclick="setRating(${i},'effectiveness',${n})">★</button>`).join("")}</div></div></div>
+   <div class="field" style="margin-top:15px"><label>Observaciones del grupo</label><textarea rows="4" id="notes" onchange="setNotes(${i},this.value)" placeholder="Anota incidencias, fortalezas o aspectos a mejorar...">${esc(e.notes)}</textarea></div>
+   <div class="actions"><button class="btn btn-primary" onclick="save();closeModal();renderApp()">✓ Guardar evaluación</button></div>`);
+}
+
+function openChair(i,mid){currentChair=i;openModal("chair",i)}
+function refreshModal(type){const old=document.getElementById("modal");if(old)old.outerHTML=`<div class="modal-back" id="modal">${modalHTML(type)}</div>`}
+function setTheme(theme){
+  state.config.theme=theme==="cute"?"cute":"navy";
+  document.body.classList.toggle("theme-cute",state.config.theme==="cute");
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.content=state.config.theme==="cute"?"#dcefdc":"#173f3f";
+  localStorage.setItem(KEY,JSON.stringify(state));
+  renderApp();
+}
+function saveChairs(){
+  const oldCount=state.config.chairs;
+  const count=Math.max(1,+document.getElementById("chairCount").value);
+  const rows=Math.max(1,+document.getElementById("chairRows").value);
+  const cols=Math.max(1,+document.getElementById("chairCols").value);
+  const inputs=[...document.querySelectorAll(".chairLabelInput")];
+  const labels=Array.from({length:count},(_,i)=>{const existing=inputs.find(x=>+x.dataset.index===i);return existing?+existing.value:(state.config.chairLabels[i]||i+1)});
+  const valid=labels.every(n=>Number.isInteger(n)&&n>0)&&new Set(labels).size===labels.length;
+  if(!valid)return showToast("Los números visibles deben ser enteros positivos y no repetirse");
+  state.config.chairs=count;state.config.rows=rows;state.config.cols=cols;
+  state.config.chairLabels=labels;
+  const oldOrder=Array.isArray(state.config.chairOrder)?state.config.chairOrder:[];
+  state.config.chairOrder=oldOrder.filter(i=>i<count);for(let i=0;i<count;i++)if(!state.config.chairOrder.includes(i))state.config.chairOrder.push(i);
+  Object.keys(state.groups).forEach(mid=>{const g=state.groups[mid]||[];while(g.length<count)g.push([]);if(g.length>count){const removed=g.splice(count);const lost=removed.flat();if(lost.length)showToast("Aviso: hay alumnos en sillones eliminados");}state.groups[mid]=g;});
+  normalizeChairConfig();save();closeModal();renderApp();
+}
+function addModule(){const name=document.getElementById("modName").value.trim();if(!name)return showToast("Escribe un nombre para el módulo");state.modules.push({id:uid("m"),name,day:+document.getElementById("modDay").value,start:document.getElementById("modStart").value,end:document.getElementById("modEnd").value});save();refreshModal("modules")}
+function deleteModule(id){state.modules=state.modules.filter(x=>x.id!==id);state.students=state.students.filter(x=>x.moduleId!==id);delete state.groups[id];save();refreshModal("modules")}
+function addException(){const date=document.getElementById("exDate").value,mid=document.getElementById("exModule").value;if(!date||!mid)return;const m=state.modules.find(x=>x.id===mid);state.exceptions=state.exceptions.filter(x=>x.date!==date);state.exceptions.push({id:uid("ex"),date,moduleId:mid,name:m.name,start:m.start,end:m.end});save();refreshModal("modules")}
+function deleteException(id){state.exceptions=state.exceptions.filter(x=>x.id!==id);save();refreshModal("modules")}
+function addStudent(mid){const name=document.getElementById("newStudent").value.trim();if(!name)return showToast("Escribe el nombre del alumno");const s={id:uid("s"),name,moduleId:mid};state.students.push(s);if(!state.groups[mid])state.groups[mid]=Array.from({length:state.config.chairs},()=>[]);let idx=state.groups[mid].reduce((best,g,i)=>g.length<state.groups[mid][best].length?i:best,0);state.groups[mid][idx].push(s.id);save();refreshModal("groups")}
+function removeStudent(id,mid){state.students=state.students.filter(s=>s.id!==id);state.groups[mid]=(state.groups[mid]||[]).map(g=>g.filter(x=>x!==id));save();refreshModal("groups")}
+function autoDistribute(mid){
+  const mode=document.getElementById("distMode")?.value||"balanced";
+  if(!state.distributionRules) state.distributionRules={};
+  if(["session","month","quarter"].includes(mode)){
+    state.distributionRules[mid]={mode,lastToken:distributionToken(currentDate,mode)};
+    distributeModule(mid,true);
+    save();
+  }else{
+    delete state.distributionRules[mid];
+    distributeModule(mid,mode==="random");
+    save();
+  }
+  showToast("Distribución realizada");
+  refreshModal("groups");
+}
+let dragId=null;function dragStudent(e,mid,sid){dragId=sid}
+function dropStudent(e,mid,idx){e.preventDefault();if(!dragId)return;state.groups[mid]=(state.groups[mid]||[]).map(g=>g.filter(x=>x!==dragId));state.groups[mid][idx].push(dragId);dragId=null;save();refreshModal("groups")}
+function importStudents(ev,mid){
+  const file=ev.target.files[0];if(!file)return;
+  const isCsv=file.name.toLowerCase().endsWith(".csv");
+  const reader=new FileReader();
+  reader.onload=e=>{try{
+    let rows=[];
+    if(isCsv){
+      rows=String(e.target.result||"").split(/\r?\n/).map(r=>r.split(",")).filter(r=>r.some(c=>String(c||"").trim()));
+    }else{
+      if(!window.XLSX)throw Error("No se ha cargado el lector Excel");
+      const wb=XLSX.read(e.target.result,{type:"array"});
+      rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
+    }
+    const first=rows[0]||[];
+    const header=first.map(x=>String(x||"").trim().toLowerCase());
+    const hasHeader=header.some(x=>x.includes("nombre")||x.includes("apellido"));
+    const nameCol=Math.max(0,header.findIndex(x=>x.includes("nombre")));
+    const surnameCol=Math.max(0,header.findIndex(x=>x.includes("apellido")));
+    const notesCol=Math.max(0,header.findIndex(x=>x.includes("observ")||x.includes("nota")));
+    const startRow=hasHeader?1:0;
+    const existing=new Set(state.students.filter(s=>s.moduleId===mid).map(s=>(`${s.name} ${s.surname||""}`).trim().toLowerCase()));
+    let added=0;
+    for(let i=startRow;i<rows.length;i++){
+      const row=rows[i]||[];
+      const name=String(row[hasHeader&&nameCol>=0?nameCol:0]||"").trim();
+      const surname=String(row[hasHeader&&surnameCol>=0?surnameCol:1]||"").trim();
+      const notes=String(row[hasHeader&&notesCol>=0?notesCol:2]||"").trim();
+      const fullName=[name,surname].filter(Boolean).join(" ").trim();
+      if(fullName&&!existing.has(fullName.toLowerCase())){state.students.push({id:uid("s"),name:fullName,surname,firstName:name,moduleId:mid,notes});existing.add(fullName.toLowerCase());added++;}
+    }
+    distributeModule(mid,false);save();refreshModal("groups");
+    showToast(`${added} alumno${added===1?"":"s"} importado${added===1?"":"s"} en este módulo`);
+  }catch(err){showToast("No se pudo leer el archivo")}};
+  if(isCsv)reader.readAsText(file,"UTF-8");else reader.readAsArrayBuffer(file);
+}
+
+function toggleChairPicker(){
+  document.getElementById("chairPickerField")?.classList.toggle("hidden",document.getElementById("taskScope")?.value!=="specific");
+}
+function toggleTaskModulePicker(prefix){
+  const scope=document.getElementById(`${prefix}ModuleScope`)?.value;
+  document.getElementById(`${prefix}ModulePicker`)?.classList.toggle("hidden",scope!=="specific");
+}
+function toggleChairPickerEdit(){
+  document.getElementById("editChairPickerField")?.classList.toggle("hidden",document.getElementById("editTaskScope")?.value!=="specific");
+}
+function selectedChairs(){return [...document.querySelectorAll(".chairPick:checked")].map(x=>+x.value)}
+function selectedEditChairs(){return [...document.querySelectorAll(".editChairPick:checked")].map(x=>+x.value)}
+function selectedModuleIds(prefix){return [...document.querySelectorAll(`.modulePick-${prefix}:checked`)].map(x=>x.value)}
+function addTask(){
+  const name=document.getElementById("taskName").value.trim();
+  if(!name)return showToast("Escribe una tarea");
+  const scope=document.getElementById("taskScope").value;
+  const chairs=scope==="specific"?selectedChairs():[];
+  const chairIndexes=chairs;
+  if(scope==="specific"&&!chairs.length)return showToast("Selecciona al menos un sillón");
+  const moduleScope=document.getElementById("newTaskModuleScope").value;
+  const moduleIds=moduleScope==="specific"?selectedModuleIds("newTask"):[];
+  if(moduleScope==="specific"&&!moduleIds.length)return showToast("Selecciona al menos un módulo");
+  state.tasks.push({id:uid("t"),section:document.getElementById("taskSection").value,name,frequency:document.getElementById("taskFreq").value,scope,chairs,chairIndexes,moduleScope,moduleIds,instrumental:!!document.getElementById("taskInstrumental")?.checked});
+  save();refreshModal("tasks");
+}
+function editTask(id){openModal("taskEdit",id)}
+function saveTaskEdit(id){
+  const t=state.tasks.find(x=>x.id===id);if(!t)return;
+  const name=document.getElementById("editTaskName").value.trim();
+  if(!name)return showToast("Escribe una tarea");
+  const scope=document.getElementById("editTaskScope").value;
+  const chairIndexes=scope==="specific"?selectedEditChairs():[];
+  const chairs=chairIndexes.map(i=>i+1);
+  if(scope==="specific"&&!chairIndexes.length)return showToast("Selecciona al menos un sillón");
+  const moduleScope=document.getElementById("editTaskModuleScope").value;
+  const moduleIds=moduleScope==="specific"?selectedModuleIds("editTask"):[];
+  if(moduleScope==="specific"&&!moduleIds.length)return showToast("Selecciona al menos un módulo");
+  t.name=name;t.section=document.getElementById("editTaskSection").value.trim()||t.section;t.frequency=document.getElementById("editTaskFreq").value;t.scope=scope;t.chairs=chairs;t.chairIndexes=chairIndexes;t.moduleScope=moduleScope;t.moduleIds=moduleIds;t.instrumental=!!document.getElementById("editTaskInstrumental")?.checked;
+  save();refreshModal("tasks");
+}
+function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);save();refreshModal("tasks")}
+function setTaskEval(chair,tid,val){getEval(currentDate,chair).tasks[tid]=val;saveSilent()}
+function setRating(chair,key,val){getEval(currentDate,chair)[key]=val;saveSilent();refreshModal("chair",chair)}
+function setNotes(chair,val){getEval(currentDate,chair).notes=val;saveSilent()}
+function exportData(){saveSilent();const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="control-gabinete-dental-copia.json";a.click();URL.revokeObjectURL(a.href);showToast("Copia descargada")}
+function importData(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.config||!x.modules)throw Error();Object.assign(state,x);save();closeModal();renderApp();showToast("Copia cargada correctamente")}catch(e){showToast("El archivo no parece una copia válida")}};r.readAsText(file)}
+function resetAll(){if(!confirm("¿Seguro que quieres borrar todos los datos? Esta acción no se puede deshacer sin una copia de seguridad."))return;localStorage.removeItem(KEY);location.reload()}
+load();document.body.classList.toggle("theme-cute",state.config.theme==="cute");const initialMeta=document.querySelector('meta[name="theme-color"]');if(initialMeta)initialMeta.content=state.config.theme==="cute"?"#dcefdc":"#173f3f";render();
+</script>
+</body>
+</html>
